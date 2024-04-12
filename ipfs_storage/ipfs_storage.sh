@@ -3,4 +3,4 @@
 echo "====================================================";
 echo "lighhouse OK";
 echo "===================================================="
-lighthouse-web3 wallet;
+lighthouse-web3 import-wallet --key $KEYW;
