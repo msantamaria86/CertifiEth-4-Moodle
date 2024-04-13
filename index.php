@@ -13,36 +13,80 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+
 /**
- * @package     local_greetings
- * @copyright   2023 Miguel S <msantamaria86@gmail.com>
+ * Display information about all the mod_certifieth modules in the requested course.
+ *
+ * @package     mod_certifieth
+ * @copyright   2024 Miguel Santamaria <msantamaria86@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- require_once('../../config.php');
+require(__DIR__.'/../../config.php');
 
- $PAGE->requires->css('/blocks/certifieth/styles.css');
- $context = context_system::instance();
- $PAGE->set_context($context);
- $PAGE->set_url(new moodle_url('/blocks/certifieth/index.php'));
- $PAGE->set_pagelayout('standard');
- $PAGE->set_title(get_string('pluginname', 'block_certifieth'));
- $PAGE->set_heading(get_string('pluginname', 'block_certifieth'));
+require_once(__DIR__.'/lib.php');
 
- $logourl = new moodle_url('/blocks/certifieth/pix/LogoCertifiEth.svg');
- $witnessurl = new moodle_url('/blocks/certifieth/pix/witness.png');
- $signurl = new moodle_url('/blocks/certifieth/pix/sign.svg');
+$id = required_param('id', PARAM_INT);
 
- echo $OUTPUT->header();
- echo get_string('shortDescription', 'block_certifieth');
- echo '<img src="' . $logourl . '" alt="CertifiEth Logo" class="certifieth-logo">';
- echo get_string('description', 'block_certifieth');
- echo '<div class="sponsor-logos-container">';
- echo '<img src="' . $witnessurl . '" alt="Witness Logo" class="sponsor-logo">';
- echo '<img src="' . $signurl . '" alt="Sign Logo" class="sponsor-logo">';
- echo '</div>';
- echo '<div class="continue-button-container">';
- echo '<a href="' . './' . '" class="mainButton btn btn-primary">Continue</a>';
- echo '</div>';
- echo $OUTPUT->footer();
- 
+$course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
+require_course_login($course);
+
+$coursecontext = context_course::instance($course->id);
+
+$event = \mod_certifieth\event\course_module_instance_list_viewed::create(array(
+    'context' => $modulecontext
+));
+$event->add_record_snapshot('course', $course);
+$event->trigger();
+
+$PAGE->set_url('/mod/certifieth/index.php', array('id' => $id));
+$PAGE->set_title(format_string($course->fullname));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_context($coursecontext);
+
+echo $OUTPUT->header();
+
+$modulenameplural = get_string('modulenameplural', 'mod_certifieth');
+echo $OUTPUT->heading($modulenameplural);
+
+$certifieths = get_all_instances_in_course('certifieth', $course);
+
+if (empty($certifieths)) {
+    notice(get_string('no$certifiethinstances', 'mod_certifieth'), new moodle_url('/course/view.php', array('id' => $course->id)));
+}
+
+$table = new html_table();
+$table->attributes['class'] = 'generaltable mod_index';
+
+if ($course->format == 'weeks') {
+    $table->head  = array(get_string('week'), get_string('name'));
+    $table->align = array('center', 'left');
+} else if ($course->format == 'topics') {
+    $table->head  = array(get_string('topic'), get_string('name'));
+    $table->align = array('center', 'left', 'left', 'left');
+} else {
+    $table->head  = array(get_string('name'));
+    $table->align = array('left', 'left', 'left');
+}
+
+foreach ($certifieths as $certifieth) {
+    if (!$certifieth->visible) {
+        $link = html_writer::link(
+            new moodle_url('/mod/certifieth/view.php', array('id' => $certifieth->coursemodule)),
+            format_string($certifieth->name, true),
+            array('class' => 'dimmed'));
+    } else {
+        $link = html_writer::link(
+            new moodle_url('/mod/certifieth/view.php', array('id' => $certifieth->coursemodule)),
+            format_string($certifieth->name, true));
+    }
+
+    if ($course->format == 'weeks' || $course->format == 'topics') {
+        $table->data[] = array($certifieth->section, $link);
+    } else {
+        $table->data[] = array($link);
+    }
+}
+
+echo html_writer::table($table);
+echo $OUTPUT->footer();

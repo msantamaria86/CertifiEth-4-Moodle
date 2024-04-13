@@ -17,15 +17,15 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     block_certifieth
+ * @package     mod_certifieth
  * @copyright   2024 Miguel Santamaria <msantamaria86@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_certifieth';
+$plugin->component = 'mod_certifieth';
 $plugin->release = '0.1.0';
-$plugin->version = 2024040800;
-$plugin->requires = 2020061500;
+$plugin->version = 2024041202;
+$plugin->requires = 2022112800;
 $plugin->maturity = MATURITY_ALPHA;

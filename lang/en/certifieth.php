@@ -17,7 +17,7 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     block_certifieth
+ * @package     mod_certifieth
  * @category    string
  * @copyright   2024 Miguel Santamaria <msantamaria86@gmail.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,6 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'CertifiEth 4 Moodle';
+$string['pluginname'] = 'Certifi-Eth 4 moodle';
+$string['modulename'] = 'Certifi-Eth 4 moodle';
+$string['modulenameplural'] = 'Certifi-Eth 4 moodle';
+$string['certifiethname'] = 'Ref ID';
+$string['certifiethname_help'] = 'To create a new RefId please follow this link: google.com';
+$string['certifiethsettings'] = 'Certificate TH settings';
+$string['certifiethfieldset'] = 'Custom example fieldset';
 $string['shortDescription'] = 'Evolve Educational Certifications with On-chain Verification via Moodle Plug-in';
 $string['description'] = 'CertifiEth represents a groundbreaking fusion of Moodle, the renowned platform trusted by over 350,000 educational institutions worldwide, and Blockchain technology. Our innovative Moodle plug-in introduces a pioneering method to generate on-chain educational certifications. Leveraging the Ethereum blockchain, CertifiEth facilitates seamless attestation and issuance of NFT-based certifications, streamlining the process for institutions and educators globally.';

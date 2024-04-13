@@ -21,4 +21,25 @@
   height: 100px;
   margin: 1% 5%;
 }
-
+.continue-button-container {
+  margin-bottom: 3%;
+  width: 100%;
+  display: grid;
+}
+.mainButton {
+  justify-self: center;
+}
+.static-element {
+  width: 100%; 
+  margin: 4%; 
+  display: block;
+  text-align: center;
+}
+.static-element-text{
+  margin-top: 0.5%;
+}
+.submit-button-container {
+  text-align: center; 
+  margin-left: 25%;
+  margin-top: 3%;
+}
