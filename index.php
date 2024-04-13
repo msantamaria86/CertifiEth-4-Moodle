@@ -34,7 +34,7 @@ require_course_login($course);
 $coursecontext = context_course::instance($course->id);
 
 $event = \mod_certifieth\event\course_module_instance_list_viewed::create(array(
-    'context' => $modulecontext
+    'context' => $coursecontext
 ));
 $event->add_record_snapshot('course', $course);
 $event->trigger();
@@ -52,7 +52,7 @@ echo $OUTPUT->heading($modulenameplural);
 $certifieths = get_all_instances_in_course('certifieth', $course);
 
 if (empty($certifieths)) {
-    notice(get_string('no$certifiethinstances', 'mod_certifieth'), new moodle_url('/course/view.php', array('id' => $course->id)));
+    notice(get_string('nocertifiethinstances', 'mod_certifieth'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 $table = new html_table();

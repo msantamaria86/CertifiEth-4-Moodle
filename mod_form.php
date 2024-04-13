@@ -13,6 +13,7 @@ class mod_certifieth_mod_form extends moodleform_mod {
     global $CFG;
     
     $mform = $this->_form;
+    $landing_page_html = "";
     $landing_page_html .= '<div id="shortDescription">' . get_string('shortDescription', 'mod_certifieth') . '</div>';
     $landing_page_html .= '<img src="' . $logourl . '" alt="CertifiEth Logo" class="certifieth-logo">';
     $landing_page_html .= get_string('description', 'mod_certifieth');

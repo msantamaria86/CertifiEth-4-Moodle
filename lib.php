@@ -51,13 +51,21 @@ function certifieth_supports($feature) {
 function certifieth_add_instance($certifieth) {
     global $CFG, $DB;
 
-    // Insert the new instance into the mod_certifieth table.
-    $certifieth->id = $DB->insert_record('certifieth', $certifieth);
+    $customData = new stdClass();
+    $customData->course = $certifieth->selectcourse;
+    $customData->teacher = $certifieth->teacherName;
+    $customData->name = 'test';
+    $customData->image = $certifieth->IpfsHash;
+    $customData->refid = $certifieth->name;
+    $customData->description = $certifieth->intro; 
+    
+    // Debugging: Print the object to error log to inspect its structure.
+    error_log(print_r($certifieth, true));
 
-    // Redirect to the plugin's index page.
-    redirect(new moodle_url('/mod/certifieth/index.php', array('id' => $certifieth->course)));
+    // Attempt to insert the record.
+    $insertedId = $DB->insert_record('certifieth', $customData);
 
-    return $certifieth->id;
+    return $insertedId; // Return the ID of the inserted record.
 }
 
 /**
