@@ -37,6 +37,7 @@ function certifieth_supports($feature) {
     }
 }
 
+
 /**
  * Saves a new instance of the mod_certifieth into the database.
  *
@@ -49,16 +50,17 @@ function certifieth_supports($feature) {
  * @return int The id of the newly inserted record.
  */
 function certifieth_add_instance($certifieth) {
-    global $CFG, $DB;
+    global $CFG, $DB, $COURSE;
 
     $customData = new stdClass();
-    $customData->course = $certifieth->selectcourse;
+    $customData->course = $COURSE->id;
+    $customData->name = $COURSE->fullname;
     $customData->teacher = $certifieth->teacherName;
-    $customData->name = 'test';
-    $customData->image = $certifieth->IpfsHash;
     $customData->refid = $certifieth->name;
-    $customData->description = $certifieth->intro; 
-    
+    $customData->image = $certifieth->IpfsHash;
+    $customData->intro = $certifieth->intro; 
+    $customData->introformat = $certifieth->introformat; 
+
     // Debugging: Print the object to error log to inspect its structure.
     error_log(print_r($certifieth, true));
 

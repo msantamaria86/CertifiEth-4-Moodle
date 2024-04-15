@@ -1,6 +1,8 @@
 <?php
 defined('MOODLE_INTERNAL') || die();
 
+
+
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 $PAGE->requires->css('/mod/certifieth/styles.css');
 
@@ -10,7 +12,7 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $witnessurl = new moodle_url('/mod/certifieth/pix/witness.png');
     $signurl = new moodle_url('/mod/certifieth/pix/sign.svg');
 
-    global $CFG;
+    global $CFG, $USER, $COURSE;
     
     $mform = $this->_form;
     $landing_page_html = "";
@@ -20,22 +22,20 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $landing_page_html .= '<div class="sponsor-logos-container">';
     $landing_page_html .= '<img src="' . $witnessurl . '" alt="Witness Logo" class="sponsor-logo">';
     $landing_page_html .= '<img src="' . $signurl . '" alt="Sign Logo" class="sponsor-logo">';
+    $landing_page_html .= '';
     $landing_page_html .= '</div>';
     $landing_page_html .= '<div class="continue-button-container">';
     $landing_page_html .= '<a href="#formStart" class="mainButton btn btn-primary">Continue</a>';
     $landing_page_html .= '</div>';
+    //$landing_page_html .= var_dump($USER);
 
     $mform->addElement('html', $landing_page_html);
     $attributes_text = ['size' => '60'];
     $attributes_textarea = ['cols' => '47', 'rows' => '10'];
 
+    
     $static_question_html = '<div class="static-element">WHICH COURSE DO YOU WANT TO ENABLE FOR CERTIFICATION?</div>';
-
-    $courses = [['id'=>1, 'name'=>'test'],['id'=>2, 'name'=>'test2']];
-    $course_options = [];
-    foreach ($courses as $course) {
-        $course_options[$course['id']] = $course['name'];
-    }
+    //$static_question_html= $COURSE->summary;
 
     // General settings
     $openingDiv = '<div id="formStart">';
@@ -44,10 +44,7 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $closingDiv = '</div>';
     $mform->addElement('html', $closingDiv);
     $mform->addElement('html', $static_question_html);
-
-    $mform->addElement('select', 'selectcourse', 'Course name', $course_options);
-    $mform->setType('selectcourse', PARAM_INT);
-    $mform->addElement('text', 'teacherName', 'Teacher name', $attributes_text);
+    $mform->addElement('text', 'teacherHash', 'Teacher Hash', $attributes_text);
     $mform->setType('teacherName', PARAM_TEXT); 
     $mform->addElement('text', 'IpfsHash', 'Image Certificate Hash', $attributes_text);
     $mform->setType('IpfsHash', PARAM_TEXT); 
