@@ -54,7 +54,7 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $mform->addElement('html', $closingDiv);
     $mform->addElement('html', $static_question_html);
     $mform->addElement('text', 'teacherHash', 'Teacher Hash', $attributes_text);
-    $mform->setType('teacherName', PARAM_TEXT); 
+    $mform->setType('teacherHash', PARAM_TEXT); 
     $mform->addElement('text', 'IpfsHash', 'Image Certificate Hash', $attributes_text);
     $mform->setType('IpfsHash', PARAM_TEXT); 
     $mform->addElement('select', 'selectquiz', 'Quiz required', $quisesoptions);

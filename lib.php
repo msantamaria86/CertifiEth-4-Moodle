@@ -55,7 +55,7 @@ function certifieth_add_instance($certifieth) {
     $customData = new stdClass();
     $customData->course = $COURSE->id;
     $customData->name = 'Certificate in '.$COURSE->fullname;
-    $customData->teacher = $certifieth->teacherName;
+    $customData->teacherhash = $certifieth->teacherHash;
     $customData->refid = $certifieth->name;
     $customData->quizid = $certifieth->selectquiz;
     $customData->image = $certifieth->IpfsHash;
