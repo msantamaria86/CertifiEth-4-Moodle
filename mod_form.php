@@ -12,7 +12,8 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $witnessurl = new moodle_url('/mod/certifieth/pix/witness.png');
     $signurl = new moodle_url('/mod/certifieth/pix/sign.svg');
 
-    global $CFG, $USER, $COURSE;
+    global $CFG, $DB, $COURSE;
+    $quiz = $DB->get_records('quiz');
     
     $mform = $this->_form;
     $landing_page_html = "";
@@ -27,7 +28,6 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $landing_page_html .= '<div class="continue-button-container">';
     $landing_page_html .= '<a href="#formStart" class="mainButton btn btn-primary">Continue</a>';
     $landing_page_html .= '</div>';
-    //$landing_page_html .= var_dump($USER);
 
     $mform->addElement('html', $landing_page_html);
     $attributes_text = ['size' => '60'];
@@ -35,7 +35,16 @@ class mod_certifieth_mod_form extends moodleform_mod {
 
     
     $static_question_html = '<div class="static-element">WHICH COURSE DO YOU WANT TO ENABLE FOR CERTIFICATION?</div>';
-    //$static_question_html= $COURSE->summary;
+    $quizArray = get_object_vars($quiz[1]);
+    foreach ($quiz as $qu) {
+        $quises[] = [
+            'id'   => $qu->id,
+            'name' => $qu->name,
+        ];
+    }
+    foreach ($quises as $qui) {
+        $quisesoptions[$qui['id']] = $qui['name'];
+    }
 
     // General settings
     $openingDiv = '<div id="formStart">';
@@ -48,6 +57,8 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $mform->setType('teacherName', PARAM_TEXT); 
     $mform->addElement('text', 'IpfsHash', 'Image Certificate Hash', $attributes_text);
     $mform->setType('IpfsHash', PARAM_TEXT); 
+    $mform->addElement('select', 'selectquiz', 'Quiz required', $quisesoptions);
+    $mform->setType('selectquiz', PARAM_INT);
     $mform->addElement('text', 'name', get_string('certifiethname', 'mod_certifieth'), ['size' => '64']);
     $mform->setType('name', !empty($CFG->formatstringstriptags) ? PARAM_TEXT : PARAM_CLEANHTML);
     $mform->addRule('selectcourse', null, 'required', null, 'client');
