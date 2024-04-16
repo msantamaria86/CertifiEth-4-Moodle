@@ -72,12 +72,12 @@ if ($course->format == 'weeks') {
 foreach ($certifieths as $certifieth) {
     if (!$certifieth->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/certifieth/view.php', array('id' => $certifieth->id)),
+            new moodle_url('/mod/certifieth/view.php', array('id' => $certifieth->coursemodule)),
             format_string($certifieth->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/certifieth/view.php', array('id' => $certifieth->id)),
+            new moodle_url('/mod/certifieth/view.php', array('id' => $certifieth->coursemodule)),
             format_string($certifieth->name, true));
     }
 

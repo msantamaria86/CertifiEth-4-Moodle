@@ -13,7 +13,9 @@ class mod_certifieth_mod_form extends moodleform_mod {
         $signurl = new moodle_url('/mod/certifieth/pix/sign.svg');
         $witnessurl = new moodle_url('/mod/certifieth/pix/witness.png');
         $filecoinurl = new moodle_url('/mod/certifieth/pix/filecoin.svg.png');
-    global $CFG, $USER, $COURSE;
+    global $CFG, $DB, $USER, $COURSE;
+
+    $quiz = $DB->get_records('quiz');
     
     $mform = $this->_form;
     $landing_page_html = "";
@@ -38,7 +40,16 @@ class mod_certifieth_mod_form extends moodleform_mod {
 
     
     // $static_question_html = '<div class="static-element">WHICH COURSE DO YOU WANT TO ENABLE FOR CERTIFICATION?</div>';
-    //$static_question_html= $COURSE->summary;
+    $quizArray = get_object_vars($quiz[1]);
+    foreach ($quiz as $qu) {
+        $quises[] = [
+            'id'   => $qu->id,
+            'name' => $qu->name,
+        ];
+    }
+    foreach ($quises as $qui) {
+        $quisesoptions[$qui['id']] = $qui['name'];
+    }
 
     // General settings
     $openingDiv = '<div id="formStart">';
@@ -46,14 +57,16 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $mform->addElement('header', 'general', get_string('general', 'form'));
     $closingDiv = '</div>';
     $mform->addElement('html', $closingDiv);
-    // $mform->addElement('html', $static_question_html);
-    $mform->addElement('text', 'teacherName', 'Teacher wallet address', $attributes_text);
-    $mform->setType('teacherName', PARAM_TEXT); 
+    $mform->addElement('html', $static_question_html);
+    $mform->addElement('text', 'teacherHash', 'Teacher Hash', $attributes_text);
+    $mform->setType('teacherHash', PARAM_TEXT); 
     $mform->addElement('text', 'IpfsHash', 'Image Certificate Hash', $attributes_text);
     $mform->setType('IpfsHash', PARAM_TEXT); 
+    $mform->addElement('select', 'selectquiz', 'Quiz required', $quisesoptions);
+    $mform->setType('selectquiz', PARAM_INT);
     $mform->addElement('text', 'name', get_string('certifiethname', 'mod_certifieth'), ['size' => '64']);
     $mform->setType('name', !empty($CFG->formatstringstriptags) ? PARAM_TEXT : PARAM_CLEANHTML);
-    // $mform->addRule('selectcourse', null, 'required', null, 'client');
+    $mform->addRule('selectcourse', null, 'required', null, 'client');
     $mform->addRule('teacherName', null, 'required', null, 'client');
     $mform->addRule('IpfsHash', null, 'required', null, 'client');
     $mform->addRule('name', null, 'required', null, 'client');
