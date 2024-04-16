@@ -23,6 +23,7 @@ $context = context_course::instance($course->id);
 $context = context_course::instance($course->id);
 
 // Format date+
+$moduleinstance->timecreated = time(); // Assign current time for example
 $date = userdate($moduleinstance->timecreated);
 
 // Assuming grade is stored or calculated somehow
@@ -45,7 +46,44 @@ echo '<p><strong>Grade:</strong> '.$grade.'</p>';
 // Action button
 echo '<form method="post" action="some_action.php">';
 echo '<input type="hidden" name="id" value="'.$id.'">';
-echo '<button type="submit">Take Action</button>';
+echo '<button type="button" id="metamaskButton">Take Action with MetaMask</button>';
 echo '</form>';
 
 echo $OUTPUT->footer();
+?>
+
+<script>
+    document.getElementById('metamaskButton').addEventListener('click', async function() {
+    if (typeof window.ethereum !== 'undefined') {
+        try {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        const userAddress = accounts[0];
+        const message = "Please sign this message to request your certificate.";
+        const signature = await ethereum.request({
+            method: 'personal_sign',
+            params: [message, userAddress],
+        });
+
+        // Next, send the signature and address to your server
+        sendDataToServer(signature, userAddress);
+        } catch (error) {
+        console.error(error);
+        }
+    } else {
+        console.log('MetaMask is not installed. Please consider installing it.');
+    }
+    });
+
+    async function sendDataToServer(signature, userAddress) {
+    const response = await fetch('metamaskrequest.php', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ signature, userAddress }),
+    });
+
+    const responseData = await response.json();
+    console.log(responseData); // Handle the response from your server
+    }
+</script>

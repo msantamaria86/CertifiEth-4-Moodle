@@ -50,33 +50,16 @@ function certifieth_supports($feature) {
  * @return int The id of the newly inserted record.
  */
 function certifieth_add_instance($certifieth) {
-    global $CFG, $DB;
-
-    require_once($CFG->dirroot.'/lib/filelib.php');
-
-    $context = context_course::instance($certifieth->course); // You need to ensure you have the correct context
+    global $CFG, $DB, $COURSE;
 
     $customData = new stdClass();
-    // Assuming you've added the course name handling
+    $customData->course = $COURSE->id;
+    $customData->name = $COURSE->fullname;
     $customData->teacher = $certifieth->teacherName;
-    $customData->name = 'test';
-
-    // Handle file saving and store a reference
-    $draftitemid = $certifieth->IpfsHash;
-    if ($draftitemid) {
-        file_save_draft_area_files($draftitemid, $context->id, 'mod_certifieth', 'certificate_image', 0);
-        // Assuming you want to store the file URL or a generated hash in the database
-        $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_certifieth', 'certificate_image', 0);
-        if ($file = reset($files)) { // Get the first file (if multiple, consider handling differently)
-            // Here you could generate a hash of the file content if needed
-            $customData->image = '/' . $file->get_filepath() . $file->get_filename();
-            // Or if you need an actual IPFS hash, you'd have to upload the file to IPFS and store the returned hash
-        }
-    }
-
     $customData->refid = $certifieth->name;
-    // Additional fields handling
+    $customData->image = $certifieth->IpfsHash;
+    $customData->intro = $certifieth->intro; 
+    $customData->introformat = $certifieth->introformat; 
 
     // Debugging: Print the object to error log to inspect its structure.
     error_log(print_r($certifieth, true));
