@@ -4,12 +4,11 @@ echo "================================================================"
 echo "Installing node local server..."
 echo "================================================================"
 
-sudo apt-get update -y
+sudo apt-get -y update
 curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
-#sudo apt-get install nodejs -y
-sudo apt-get install npm -y
-sudo apt-get install git -y
+sudo apt-get install -y npm
+sudo apt-get install -y git
 sudo npm install --global yarn
 
 git clone https://github.com/salviega/certifieth-4-moodle-backend-nestjs.git
