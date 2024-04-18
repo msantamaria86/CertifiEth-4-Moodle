@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env
+source /var/www/html/moodle/mod/certifieth/ipfs_storage/.env
 
 if [ -z "$KEYLH" ]; then
 echo "The KEYLH environment variable is not defined. The script cannot continue."
@@ -26,18 +26,18 @@ attempt=1
 
 while [ $attempt -le $max_attempts ]; do
 echo "Attempt $attempt of $max_attempts"
-response=$(curl -X POST -H "Authorization: Bearer $KEYLH" -F "file=@$file_name" "https://node.lighthouse.storage/api/v0/add")
+response=$(curl -X POST -H "Authorization: Bearer $KEYLH" -F "file=@/var/www/html/moodle/mod/certifieth/ipfs_storage/$file_name" "https://node.lighthouse.storage/api/v0/add")
 if [[ "$response" == *"Auth Failed!!!"* ]]; then
 echo "================================================================"
 echo "Response failed: $response"
 echo "================================================================"
 echo "Retrying..."
-echo "{"Name":"test.txt","Hash":"NULL","Size":"NULL"}" > response.json
+echo "{"Name":"test.txt","Hash":"NULL","Size":"NULL"}" > /var/www/html/moodle/mod/certifieth/ipfs_storage/response.json
 attempt=$((attempt + 1))
 else
 echo "================================================================"
 echo "The request was successful: $response"
-echo "$response" > $file_name_without_extension.json
+echo "$response" > /var/www/html/moodle/mod/certifieth/ipfs_storage/$file_name_without_extension.json
 echo "The response has been saved in response.json"
 echo "================================================================"
 break
@@ -45,7 +45,8 @@ fi
 done
 
 list_files=$(curl -H "Authorization: Bearer $KEYLH" "https://api.lighthouse.storage/api/user/files_uploaded?pageNo=1")
-echo "$list_files" > list_files.json
+echo "$list_files" > /var/www/html/moodle/mod/certifieth/ipfs_storage/list_files.json
 echo "================================================================"
 echo "All responses from IPFS are OK"
 echo "================================================================"
+
