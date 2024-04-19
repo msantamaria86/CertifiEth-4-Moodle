@@ -31,6 +31,16 @@
   width: 100%;
   display: grid;
 }
+/* .filemanager {
+  height: 240px;
+  margin-top: 4%;
+} */
+#id_certifiethfile_fieldset p {
+  display: none;
+}
+.fp-restrictions, .form-filetypes-descriptions{
+  display: none;
+}
 .mainButton {
   justify-self: center;
 }

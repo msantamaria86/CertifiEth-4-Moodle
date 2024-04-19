@@ -1,6 +1,6 @@
 <?php
 defined('MOODLE_INTERNAL') || die();
-
+$PAGE->requires->js(new moodle_url('/mod/certifieth/scroll_script.js'));
 
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
@@ -12,28 +12,30 @@ class mod_certifieth_mod_form extends moodleform_mod {
         $arbitrumurl = new moodle_url('/mod/certifieth/pix/arbitrum.png');
         $signurl = new moodle_url('/mod/certifieth/pix/sign.svg');
         $witnessurl = new moodle_url('/mod/certifieth/pix/witness.png');
-        $filecoinurl = new moodle_url('/mod/certifieth/pix/filecoin.svg.png');
+        $filecoinurl = new moodle_url('/mod/certifieth/pix/filecoin.png');
     global $CFG, $DB, $USER, $COURSE;
 
     $quiz = $DB->get_records('quiz');
     
     $mform = $this->_form;
     $landing_page_html = "";
+    $landing_page_html .= '<div id="scrollTargetHome"></div>'; 
+    $landing_page_html .= '<br>'; 
+    $landing_page_html .= '<div></div>'; 
     $landing_page_html .= '<div id="shortDescription">' . get_string('shortDescription', 'mod_certifieth') . '</div>';
     $landing_page_html .= '<img src="' . $logourl . '" alt="CertifiEth Logo" class="certifieth-logo">';
     $landing_page_html .= get_string('description', 'mod_certifieth');
     $landing_page_html .= '<div class="sponsor-logos-container">';
-    $landing_page_html .= '<img src="' . $arbitrumurl . '" alt="Arbitrum Logo" class="sponsor-logo">';
-    $landing_page_html .= '<img src="' . $signurl . '" alt="Sign Logo" class="sponsor-logo1">';
-    $landing_page_html .= '<img src="' . $witnessurl . '" alt="Witness Logo" class="sponsor-logo1">';
-    $landing_page_html .= '<img src="' . $filecoinurl . '" alt="Filecoin Logo" class="sponsor-logo">';
+    $landing_page_html .= '<img src="' . $arbitrumurl . '" alt="Arbitrum Logo" class="sponsor-logo1">';
+    $landing_page_html .= '<img src="' . $signurl . '" alt="Sign Logo" class="sponsor-logo">';
+    $landing_page_html .= '<img src="' . $witnessurl . '" alt="Witness Logo" class="sponsor-logo">';
+    $landing_page_html .= '<img src="' . $filecoinurl . '" alt="Filecoin Logo" class="sponsor-logo1">';
     $landing_page_html .= '';
     $landing_page_html .= '</div>';
     $landing_page_html .= '<div class="continue-button-container">';
-    $landing_page_html .= '<a href="#formStart" class="mainButton btn btn-primary">Continue</a>';
-    $landing_page_html .= '</div>';
-    //$landing_page_html .= var_dump($USER);
-
+    $landing_page_html .= '<br>'; 
+    $landing_page_html .= '<a href="#scrollTarget" class="mainButton btn btn-primary">Continue</a>';
+    
     $mform->addElement('html', $landing_page_html);
     $attributes_text = ['size' => '60'];
     $attributes_textarea = ['cols' => '47', 'rows' => '10'];
@@ -57,11 +59,22 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $mform->addElement('header', 'general', get_string('general', 'form'));
     $closingDiv = '</div>';
     $mform->addElement('html', $closingDiv);
-    $mform->addElement('html', $static_question_html);
-    $mform->addElement('text', 'teacherHash', 'Teacher Wallet', $attributes_text);
+    
+    
+    $mform->addElement('text', 'teacherHash', 'Teacher Wallet Address', $attributes_text);
+    $scroll_target_html = '<div id="scrollTarget"></div>'; 
+    $mform->addElement('html', $scroll_target_html);
     $mform->setType('teacherHash', PARAM_TEXT); 
-    $mform->addElement('text', 'IpfsHash', 'Image Certificate Hash', $attributes_text);
-    $mform->setType('IpfsHash', PARAM_TEXT); 
+    $mform->addElement('html', '<br>'); 
+    $mform->addElement('filemanager', 'certifiethfile', 'Upload blank certificate', null, array(
+        'subdirs' => 0,
+        'maxbytes' => 10485760, 
+        'areamaxbytes' => 10485760,
+        'maxfiles' => 1, 
+        'accepted_types' => array('image'),
+    ));
+    // $mform->addElement('text', 'IpfsHash', 'Image Certificate Hash', $attributes_text);
+    // $mform->setType('IpfsHash', PARAM_TEXT); 
     $mform->addElement('select', 'selectquiz', 'Quiz required', $quisesoptions);
     $mform->setType('selectquiz', PARAM_INT);
     $mform->addElement('text', 'name', get_string('certifiethname', 'mod_certifieth'), ['size' => '64']);
@@ -86,25 +99,10 @@ class mod_certifieth_mod_form extends moodleform_mod {
 
     // Add standard buttons.
     $this->add_action_buttons();
+    
     }
 
     public function self_test() {
         return true;
     }
-}
-
-$PAGE->requires->js_init_code("
-    document.addEventListener('DOMContentLoaded', function() {
-        var element = document.getElementById('shortDescription');
-        if (element) {
-            var offset = 150;
-            var elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-            var offsetPosition = elementPosition - offset;
-            
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
-        }
-    });
-");
+};
