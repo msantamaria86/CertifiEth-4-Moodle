@@ -4,7 +4,7 @@ source /var/www/html/moodle/mod/certifieth/ipfs_storage/.env
 
 if [ -z "$KEYLH" ]; then
 echo "The KEYLH environment variable is not defined. The script cannot continue."
-exit 1 
+exit 1
 fi
 
 # Verificar si se proporcionó un nombre de archivo como argumento
