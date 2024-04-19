@@ -21,9 +21,8 @@ class mod_certifieth_mod_form extends moodleform_mod {
     $landing_page_html = "";
     $landing_page_html .= '<div id="scrollTargetHome"></div>'; 
     $landing_page_html .= '<br>'; 
-    $landing_page_html .= '<div></div>'; 
     $landing_page_html .= '<div id="shortDescription">' . get_string('shortDescription', 'mod_certifieth') . '</div>';
-    $landing_page_html .= '<img src="' . $logourl . '" alt="CertifiEth Logo" class="certifieth-logo">';
+    $landing_page_html .= '<img src="' . $logourl . '" alt="CertifiEth Logo" class="certifi-logo">';
     $landing_page_html .= get_string('description', 'mod_certifieth');
     $landing_page_html .= '<div class="sponsor-logos-container">';
     $landing_page_html .= '<img src="' . $arbitrumurl . '" alt="Arbitrum Logo" class="sponsor-logo1">';

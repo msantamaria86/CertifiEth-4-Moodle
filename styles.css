@@ -1,6 +1,21 @@
-.certifieth-logo {
-  width: 280px;
-  height: 280px;
+
+
+#formStart label {
+  color: #16a085; /* This sets the color of all labels within the formStart container */
+}
+
+label  {
+  color: #16a085; /* Set the color of the labels to #16a085 */
+  font-weight: bold; /* Optional: makes the label text bold */
+}
+#id_certifiethfile_label  {
+  color: #16a085; /* Set the color of the labels to #16a085 */
+  font-weight: bold; /* Optional: makes the label text bold */
+}
+
+.certifi-logo {
+  width: 288px;
+  height: 288px;
   margin: 5% 30%;
 }
 
