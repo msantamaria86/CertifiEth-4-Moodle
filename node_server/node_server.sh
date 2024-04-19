@@ -32,7 +32,7 @@ echo "================================================================"
 echo "Node server online in port 3030"
 echo "================================================================"
 
-response=$(curl -X 'GET' 'http://localhost:3375/' -H 'accept: application/json')
+response=$(curl -X 'GET' 'http://localhost:3000/' -H 'accept: application/json')
 echo $response
 
 if [ "$response" = "Attestation backend is running! 🎈" ]; then
