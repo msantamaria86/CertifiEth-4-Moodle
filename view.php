@@ -69,7 +69,7 @@ echo $OUTPUT->header();
     <p></p>    
 <?php
 if($urltemp=="")echo "";
-else '<img src="<?= $urltemp ?>" alt="Certificado en BlockChain"></img>';
+else echo '<img src="'.$urltemp.'" alt="Certificado en BlockChain"></img>';
 echo $OUTPUT->footer();
 ?>
 
