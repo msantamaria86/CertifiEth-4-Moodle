@@ -121,10 +121,6 @@ $signScanAttestation = "https://testnet-scan.sign.global/attestation/onchain_evm
 $signAttestationUrl = "$signScanAttestation$signAttestationId";
 $witnessAttestionProof = $responseObj->attestation->data->{'Witness proof'};
 
-<<<<<<< Updated upstream
-=======
-error_log('witnessssssssssssssss'.$witnessAttestionProof);
->>>>>>> Stashed changes
 
 $metadata = [
   "description" => $coursedescription,
@@ -185,7 +181,6 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 ]);
 
 curl_exec($ch);
-$_SESSION['minting_in_progress'] = true;
 curl_close($ch);
 
 
@@ -198,8 +193,5 @@ $customData->hashfileips = $imageurl;
 $customData->attestation = $signAttestationUrl;
 
 $insertedId = $DB->insert_record('certifieth_user', $customData);
-<<<<<<< Updated upstream
 
 sleep(15);
-=======
->>>>>>> Stashed changes
