@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source /var/www/html/moodle/mod/certifieth/ipfs_storage/.env
+KEYLH='d9a844e4.7330e8aac6c943779b4f036467dff4b7'
 
 if [ -z "$KEYLH" ]; then
-echo "The KEYLH environment variable is not defined. The script cannot continue."
+echo "The KEYLH environment variable is no:t defined. The script cannot continue."
 exit 1
 fi
 
