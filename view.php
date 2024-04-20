@@ -1,20 +1,36 @@
 <?php
 require_once('../../config.php');
 require_login();
+global $USER, $DB, $COURSE;
+$curso = 2;
+$coursedb = $DB->get_record('course', ['id'=>$curso]);
+//$datacourse = get_course($lastaccess->courseid);
 
 $moduleinstance = new stdClass();
-$moduleinstance->course = 1; // Assuming course ID 1 exists
+$moduleinstance->course = $curso; // Assuming course ID 1 exists
 $course = new stdClass();
-$course->id = 1;
+$course->id = $curso;
 $name = "$USER->firstname $USER->lastname";
-$fullname = $COURSE->fullname;
-$summary = $COURSE->summary;
+$fullname = $coursedb->fullname;
+$summary = $coursedb->summary;
 $isDisabled = false;
 $context = context_course::instance($course->id);
 
 $moduleinstance->timecreated = time(); // Assign current time for example
 $date = userdate($moduleinstance->timecreated);
-$grade = 'A'; 
+$resultquestion = $DB->get_record('certifieth',['course' => $coursedb->id]);
+$question = $resultquestion->quizid;
+$resultquiz = $DB->get_record('quiz_attempts',['userid' => $USER->id, 'quiz' => $question]);
+$quiz = $resultquiz->sumgrades;
+$resultimage = $DB->get_record('certifieth_user',['userid' => $USER->id, 'certifiethid' => $resultquestion->id]);
+$urltemp=$resultimage->hashfileips;
+
+if($quiz>7){
+    if($urltemp=="")$isDisabled=false;
+    else $isDisabled=true;
+}
+else $isDisabled=true;
+
 
 $PAGE->set_context($context);
 $PAGE->set_url('/mod/certifieth/view.php', array('id' => $course->id));
@@ -42,13 +58,18 @@ echo $OUTPUT->header();
     <p><strong>Course:</strong> <?= format_string($fullname) ?></p>
     <p><strong>Summary:</strong> <?= format_string($summary) ?></p>
     <p><strong>Date:</strong> <?= $date ?></p>
-    <p><strong>Grade:</strong> <?= $grade ?></p>
+    <p><strong>Result quiz:</strong> <?= $quiz ?></p>
+   
 </div>
 
 <form method="post" action="some_action.php">
     <input type="hidden" name="id" value="<?= $course->id ?>">
     <button type="button" id="metamaskButton" <?= $isDisabled ? 'disabled="disabled" class="disabledButton"' : '' ?>>Certify!</button>
+    <p></p>
+    <p></p>    
 <?php
+if($urltemp=="")echo "";
+else '<img src="<?= $urltemp ?>" alt="Certificado en BlockChain"></img>';
 echo $OUTPUT->footer();
 ?>
 
@@ -72,8 +93,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     method: 'personal_sign',
                     params: [message, userAddress],
                 });
-
-                sendDataToServer(signature, userAddress, hash);
+                await sendDataToServer(signature, userAddress, hash);   
             } catch (error) {
                 console.error(error);
             }
@@ -93,6 +113,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         const responseData = await response.json();
         console.log('💥 Minted', responseData);
+
     }
 });
 </script>

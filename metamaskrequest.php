@@ -2,19 +2,22 @@
 $data = json_decode(file_get_contents('php://input'), true);
 require_once('../../config.php');
 require_login();
-global $COURSE, $USER, $CFG;
+global $COURSE, $USER, $DB;
+
+$curso = 2;
+$coursedb = $DB->get_record('course', ['id'=>$curso]);
 
 
 $dirimage='/var/www/html/moodle/mod/certifieth/pix/';
 $diripfs='/var/www/html/moodle/mod/certifieth/ipfs_storage/';
 $studentname = $USER->firstname.' '.$USER->lastname;
-$coursename = $COURSE->fullname;
-$coursedescription= $COURSE->summary;
+$coursename = $coursedb->fullname;
+$coursedescription= $coursedb->summary;
 $signature = $data['signature'] ?? '';
 $userAddress = $data['userAddress'] ?? '';
 $hash = $data['hash'] ?? '';
-
-
+$record = $DB->get_record('certifieth', ['course' => $coursedb->id]);
+$teacheradress = $record->teacherhash;
 $lighthousegateway = 'https://gateway.lighthouse.storage/ipfs/';
 
 
@@ -85,12 +88,12 @@ $postData = [
     "hash" => "$hash",
     "type" => "course",
     "attestation" => [
-        "schemaId" => "0x84",
-        "linkedAttestationId" => "0xd2",
+        "schemaId" => "0x23",
+        "linkedAttestationId" => "0x14",
         "indexingValue" => "Beta",
         "recipients" => ["$userAddress"],
         "data" => [
-            "Teacher address" => "0xD96B642Ca70edB30e58248689CEaFc6E36785d68",
+            "Teacher address" => "$teacheradress",
             "Witness proof" => null
         ]
     ]
@@ -114,9 +117,10 @@ curl_close($ch);
 $responseObj = json_decode($response);
 
 $signAttestationId = $responseObj->attestationId;
-$signScanAttestation = "https://testnet-scan.sign.global/attestation/onchain_evm_84532_";
+$signScanAttestation = "https://testnet-scan.sign.global/attestation/onchain_evm_421614_";
 $signAttestationUrl = "$signScanAttestation$signAttestationId";
 $witnessAttestionProof = $responseObj->attestation->data->{'Witness proof'};
+
 
 $metadata = [
   "description" => $coursedescription,
@@ -178,3 +182,16 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 
 curl_exec($ch);
 curl_close($ch);
+
+
+
+$customData = new stdClass();
+$customData->certifiethid = $record->id;
+$customData->userid = $USER->id;
+$customData->addresuser = $userAddress;
+$customData->hashfileips = $imageurl;
+$customData->attestation = $signAttestationUrl;
+
+$insertedId = $DB->insert_record('certifieth_user', $customData);
+
+sleep(15);
