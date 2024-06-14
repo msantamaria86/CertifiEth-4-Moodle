@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,34 +12,68 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * post installation hook for adding data.
+ * Code to be executed after the plugin's database scheme has been installed is defined here.
  *
- * @package    mod_certifieth
- * @copyright  2024 CertifiETH 4 Moodle <pablovesga@outlook.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_certifieth
+ * @category    upgrade
+ * @copyright   2024 Pablo Vesga <pablovesga@outlook.com>
+ * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
- * Post installation procedure
+ * Custom code to be run on installing the plugin.
  */
 function xmldb_certifieth_install() {
-    global $DB;
 
-    $result = true;
-    $arr = array('P' => 2, 'A' => 0, 'L' => 1, 'E' => 1);
-    foreach ($arr as $k => $v) {
-        $rec = new stdClass;
-        $rec->certifiethid = 0;
-        //$rec->acronym = get_string($k.'acronym', 'certifieth');
-        // Sanity check - if language translation uses more than the allowed 2 chars.
-        //if (mb_strlen($rec->acronym) > 2){$rec->acronym = $k;}
-        $rec->description = get_string($k.'full', 'certifieth');
-        $rec->grade = $v;
+    return true;
+}
+
+$installationForm = '<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Instalacion del APP</title>
+</head>
+<body>
+    <p>se conectan tres tipos de usuarios</p>
+    <p>expertos solo se necesita token</p>
+    <p>completamente nuevos se les debe explicar un read more. etc</p>
+    <p>ya lo han usado y desean comprar</p>
+    <h1>Formulario de token</h1>
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
+        <label for="token">Token:</label>
+        <input type="text" id="token" name="token" required>
+        <br>
+        <br>
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>';
+
+// Procesar código ingresado
+if (isset($_POST['token'])) {
+    $codigoIngresado = $_POST['token'];
+
+    // Validar el código
+    if (validarCodigo($codigoIngresado)) {
+        // Almacenar el código
+        $codigoValido = $codigoIngresado;
+        guardarCodigo($codigoValido);
+
+        // Continuar con la instalación
+        // ... (código para instalar el plugin)
+    } else {
+        // Mostrar mensaje de error
+        echo '<p class="error">El código ingresado es incorrecto.</p>';
+        // Detener la instalación
+        exit;
     }
-    return $result;
+}
+else {
+        // Display the installation form
+        echo $installationForm; // Replace with the generated HTML form
+
 }
